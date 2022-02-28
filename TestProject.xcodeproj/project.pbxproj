@@ -62,11 +62,9 @@
 		556215E327C8C78400932717 /* TestProject */ = {
 			isa = PBXGroup;
 			children = (
-				556215E827C8C78400932717 /* ViewController.swift */,
-				5562160427C9293A00932717 /* TableCell.swift */,
-				556215FB27C8C81F00932717 /* NetworkManager.swift */,
-				556215FF27C8C86100932717 /* Matches.swift */,
-				5562160727CC0D1200932717 /* Date.swift */,
+				5562161027CD158C00932717 /* ViewController */,
+				5562160F27CD153400932717 /* View */,
+				5562160E27CD152600932717 /* Model */,
 				556215E427C8C78400932717 /* AppDelegate.swift */,
 				556215E627C8C78400932717 /* SceneDelegate.swift */,
 				556215ED27C8C78500932717 /* Assets.xcassets */,
@@ -74,6 +72,32 @@
 				556215F227C8C78500932717 /* Info.plist */,
 			);
 			path = TestProject;
+			sourceTree = "<group>";
+		};
+		5562160E27CD152600932717 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				5562160727CC0D1200932717 /* Date.swift */,
+				556215FF27C8C86100932717 /* Matches.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		5562160F27CD153400932717 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				5562160427C9293A00932717 /* TableCell.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		5562161027CD158C00932717 /* ViewController */ = {
+			isa = PBXGroup;
+			children = (
+				556215E827C8C78400932717 /* ViewController.swift */,
+				556215FB27C8C81F00932717 /* NetworkManager.swift */,
+			);
+			path = ViewController;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
