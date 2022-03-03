@@ -5,12 +5,12 @@
 //  Created by Виктория Щербакова on 25.02.2022.
 //
 
+import UIKit
+
 private enum LayoutConstant {
     static let spacing: CGFloat = 10.0
     static let itemHeight: CGFloat = 100.0
 }
-
-import UIKit
 
 final class ViewController: UIViewController {
     private var safeArea: UILayoutGuide { view.safeAreaLayoutGuide }
@@ -23,10 +23,9 @@ final class ViewController: UIViewController {
     }()
     
     private lazy var segmentControl: UISegmentedControl = { UISegmentedControl(items: menuItems) }()
-    
     private let menuItems = ["Вчера", "Сегодня", "Завтра"]
-    private var dataMatch: [Match] = []
-    private let networkManager = NetworkManager()
+    
+    var presenter: MatchesPresenterProtocol?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,22 +33,6 @@ final class ViewController: UIViewController {
         setSegmentControl(selectedIndex: 1)
         setTitle(titleText: "Title")
         setTableView()
-    }
-    
-    private func getMatches(date: Date) {
-        networkManager.getMatches(date: date) { [weak self] (result) in
-            switch result {
-            case .success(matches: let matches):
-                self?.dataMatch = matches
-                
-                DispatchQueue.main.async {
-                    self?.collectionView.reloadData()
-                }
-                
-            case .failure(let error):
-                print("Error: \(String(describing: error))")
-            }
-        }
     }
     
     private func setTitle(titleText: String) {
@@ -79,11 +62,10 @@ final class ViewController: UIViewController {
     
     @objc private func handleSegmentChange() {
         switch segmentControl.selectedSegmentIndex {
-        case 0: getMatches(date: Date.yesterday)
-        case 1: getMatches(date: Date.today)
-        default: getMatches(date: Date.tomorrow)
+        case 0: presenter?.getMatches(date: Date.yesterday)
+        case 1: presenter?.getMatches(date: Date.today)
+        default: presenter?.getMatches(date: Date.tomorrow)
         }
-        collectionView.reloadData()
     }
     
     private func setTableView() {
@@ -98,20 +80,31 @@ final class ViewController: UIViewController {
         collectionView.delegate = self
         collectionView.dataSource = self
     }
+}
+
+
+extension ViewController: MatchViewProtocol {
+    func success() {
+        collectionView.reloadData()
+    }
     
+    func failure(error: NetworkError) {
+        print(error.localizedDescription)
+    }
 }
 
 extension ViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return dataMatch.count
+        return presenter?.matches?.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! TableCell
-    
-        cell.setTextCell(match: dataMatch[indexPath.row])
-        cell.setScoreCell(score: dataMatch[indexPath.row].score!)
-        cell.setStatus(match: dataMatch[indexPath.row])
+        let match = presenter?.matches?[indexPath.row]
+        
+        cell.setTextCell(match: match!)
+        cell.setScoreCell(score: match!.score!)
+        cell.setStatus(match: match!)
         
         cell.layer.borderColor = UIColor.systemGreen.cgColor
         cell.layer.borderWidth = 2

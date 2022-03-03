@@ -18,29 +18,23 @@ enum NetworkError: Error {
     case noData
 }
 
-final class NetworkManager {
-    
-    private func getMatchesUrl(date: Date) -> String {
-        return "http://api.football-data.org/v2/matches?dateTo=\(getDate(date: date))&dateFrom=\(getDate(date: date))"
-    }
-    
-    private func getDate(date: Date) -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        return dateFormatter.string(from: date)
-    }
+protocol NetworkManagerProtocol {
+    func getMatches(date: Date, completion:  @escaping (ObtainResult) -> Void)
+}
 
-    func getMatches(date: Date, completion: @escaping (ObtainResult)-> Void) {
+final class NetworkManager: NetworkManagerProtocol {
 
-        let url = URL(string: getMatchesUrl(date: date))
-        var urlRequest = URLRequest(url: url!)
+    func getMatches(date: Date, completion: @escaping (ObtainResult) -> Void) {
+
+        guard let url = URL(string: getMatchesUrl(date: date)) else { return }
+        var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "GET"
         urlRequest.addValue("286c47b6f25b40adbfcddd76a9dc3d81", forHTTPHeaderField: "X-Auth-Token")
-            
+
         URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
-            
+
             var result: ObtainResult
-                    
+
             defer {
                 DispatchQueue.main.async {
                     completion(result)
@@ -48,7 +42,6 @@ final class NetworkManager {
             }
 
             if error == nil, let jsonData = data {
-                
                 do {
                     let getMatch = try JSONDecoder().decode(Matches.self, from: jsonData)
                     result = .success(matches: getMatch.matches ?? [])
@@ -59,14 +52,22 @@ final class NetworkManager {
                     return
                 }
 
-
             } else {
                 result = .failure(error: NetworkError.noData)
             }
-        
+
         }.resume()
     }
     
+    private func getMatchesUrl(date: Date) -> String {
+        return "http://api.football-data.org/v2/matches?dateTo=\(getDate(date: date))&dateFrom=\(getDate(date: date))"
+    }
+    
+    private func getDate(date: Date) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        return dateFormatter.string(from: date)
+    }
 }
 
 
