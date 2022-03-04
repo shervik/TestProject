@@ -25,8 +25,8 @@ final class ViewController: UIViewController {
     private lazy var segmentControl: UISegmentedControl = { UISegmentedControl(items: menuItems) }()
     
     private let menuItems = ["Вчера", "Сегодня", "Завтра"]
-    private var dataMatch: [Match] = []
-    private let networkManager = NetworkManager()
+    
+    private var viewModel: MatchesViewModelProtocol?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,22 +34,7 @@ final class ViewController: UIViewController {
         setSegmentControl(selectedIndex: 1)
         setTitle(titleText: "Title")
         setTableView()
-    }
-    
-    private func getMatches(date: Date) {
-        networkManager.getMatches(date: date) { [weak self] (result) in
-            switch result {
-            case .success(matches: let matches):
-                self?.dataMatch = matches
-                
-                DispatchQueue.main.async {
-                    self?.collectionView.reloadData()
-                }
-                
-            case .failure(let error):
-                print("Error: \(String(describing: error))")
-            }
-        }
+        viewModel = MatchesViewModel()
     }
     
     private func setTitle(titleText: String) {
@@ -78,12 +63,12 @@ final class ViewController: UIViewController {
     }
     
     @objc private func handleSegmentChange() {
+        self.collectionView.reloadData()
         switch segmentControl.selectedSegmentIndex {
-        case 0: getMatches(date: Date.yesterday)
-        case 1: getMatches(date: Date.today)
-        default: getMatches(date: Date.tomorrow)
+        case 0: viewModel?.fetchMatches(date: Date.yesterday) { self.collectionView.reloadData() }
+        case 1: viewModel?.fetchMatches(date: Date.today) { self.collectionView.reloadData() }
+        default: viewModel?.fetchMatches(date: Date.tomorrow) { self.collectionView.reloadData() }
         }
-        collectionView.reloadData()
     }
     
     private func setTableView() {
@@ -94,7 +79,7 @@ final class ViewController: UIViewController {
         collectionView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor).isActive = true
         collectionView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         collectionView.alwaysBounceVertical = true
-        collectionView.register(TableCell.self, forCellWithReuseIdentifier: "cell")
+        collectionView.register(TableViewCell.self, forCellWithReuseIdentifier: "cell")
         collectionView.delegate = self
         collectionView.dataSource = self
     }
@@ -103,15 +88,13 @@ final class ViewController: UIViewController {
 
 extension ViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return dataMatch.count
+        viewModel?.numberOfRows() ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! TableCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! TableViewCell
     
-        cell.setTextCell(match: dataMatch[indexPath.row])
-        cell.setScoreCell(score: dataMatch[indexPath.row].score!)
-        cell.setStatus(match: dataMatch[indexPath.row])
+        cell.viewModel = viewModel?.cellViewModel(at: indexPath)
         
         cell.layer.borderColor = UIColor.systemGreen.cgColor
         cell.layer.borderWidth = 2

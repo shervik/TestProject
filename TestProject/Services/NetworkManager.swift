@@ -30,7 +30,7 @@ final class NetworkManager {
         return dateFormatter.string(from: date)
     }
 
-    func getMatches(date: Date, completion: @escaping (ObtainResult)-> Void) {
+    func getMatches(date: Date, completion: @escaping (ObtainResult) -> Void) {
 
         let url = URL(string: getMatchesUrl(date: date))
         var urlRequest = URLRequest(url: url!)

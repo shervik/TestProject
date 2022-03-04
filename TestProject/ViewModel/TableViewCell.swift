@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-final class TableCell: UICollectionViewCell {
+final class TableViewCell: UICollectionViewCell {
     
     private lazy var homeTeam = { UILabel() }()
     private lazy var awayTeam = { UILabel() }()
@@ -32,19 +32,13 @@ final class TableCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setTextCell(match: Match) {
-        homeTeam.text = match.homeTeam?.name
-        awayTeam.text = match.awayTeam?.name
-    }
-    
-    func setScoreCell(score: Score) {
-        let homeScore: Int = score.fullTime?.homeTeam ?? 0
-        let awayScore: Int = score.fullTime?.awayTeam ?? 0
-        scoreMatch.text = "\(homeScore) : \(awayScore)"
-    }
-    
-    func setStatus(match: Match) {
-        status.text = match.status
+    var viewModel: TableViewCellViewModelProtocol? {
+        didSet{
+            homeTeam.text = viewModel?.homeTeamName
+            awayTeam.text = viewModel?.awayTeamName
+            scoreMatch.text = viewModel?.scoreMatch
+            status.text = viewModel?.status
+        }
     }
     
     private func configureHomeTeam() {
