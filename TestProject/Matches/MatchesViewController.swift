@@ -5,51 +5,41 @@
 //  Created by Виктория Щербакова on 25.02.2022.
 //
 
-private enum LayoutConstant {
-    static let spacing: CGFloat = 10.0
-    static let itemHeight: CGFloat = 100.0
-}
-
 import UIKit
 
-final class ViewController: UIViewController {
+protocol MatchesViewInputProtocol: AnyObject {
+    func reloadDataForSection(for section: MatchesSectionViewModel)
+}
+
+protocol MatchesViewOutputProtocol: AnyObject {
+    init(view: MatchesViewInputProtocol)
+    func viewDidLoad(date: Date)
+}
+
+final class MatchesViewController: UIViewController {
     private var safeArea: UILayoutGuide { view.safeAreaLayoutGuide }
+    
+    var presenter: MatchesViewOutputProtocol?
+    private let configurator: MatchesConfiguratorInputProtocol = MatchesConfigurator()
 
     private lazy var titleLive: UILabel = { UILabel() }()
-    
     private lazy var collectionView: UICollectionView = {
         let viewLayout = UICollectionViewFlowLayout()
         return UICollectionView(frame: .zero, collectionViewLayout: viewLayout)
     }()
-    
     private lazy var segmentControl: UISegmentedControl = { UISegmentedControl(items: menuItems) }()
     
     private let menuItems = ["Вчера", "Сегодня", "Завтра"]
-    private var dataMatch: [Match] = []
-    private let networkManager = NetworkManager()
+    private var section: SectionRowPresentable = MatchesSectionViewModel()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        configurator.configure(with: self)
+//        presenter?.viewDidLoad()
         view.backgroundColor = .systemGreen
         setSegmentControl(selectedIndex: 1)
         setTitle(titleText: "Title")
         setTableView()
-    }
-    
-    private func getMatches(date: Date) {
-        networkManager.getMatches(date: date) { [weak self] (result) in
-            switch result {
-            case .success(matches: let matches):
-                self?.dataMatch = matches
-                
-                DispatchQueue.main.async {
-                    self?.collectionView.reloadData()
-                }
-                
-            case .failure(let error):
-                print("Error: \(String(describing: error))")
-            }
-        }
     }
     
     private func setTitle(titleText: String) {
@@ -79,11 +69,11 @@ final class ViewController: UIViewController {
     
     @objc private func handleSegmentChange() {
         switch segmentControl.selectedSegmentIndex {
-        case 0: getMatches(date: Date.yesterday)
-        case 1: getMatches(date: Date.today)
-        default: getMatches(date: Date.tomorrow)
+        case 0: presenter?.viewDidLoad(date: Date.yesterday)
+        case 1: presenter?.viewDidLoad(date: Date.today)
+        default: presenter?.viewDidLoad(date: Date.tomorrow)
         }
-        collectionView.reloadData()
+//        collectionView.reloadData()
     }
     
     private func setTableView() {
@@ -101,17 +91,15 @@ final class ViewController: UIViewController {
     
 }
 
-extension ViewController: UICollectionViewDataSource {
+extension MatchesViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return dataMatch.count
+        self.section.rows.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! TableCell
-    
-        cell.setTextCell(match: dataMatch[indexPath.row])
-        cell.setScoreCell(score: dataMatch[indexPath.row].score!)
-        cell.setStatus(match: dataMatch[indexPath.row])
+        let cellViewModel = section.rows[indexPath.row]
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellViewModel.cellIdentifier, for: indexPath) as! TableCell
+        cell.cellViewModel = cellViewModel
         
         cell.layer.borderColor = UIColor.systemGreen.cgColor
         cell.layer.borderWidth = 2
@@ -121,11 +109,11 @@ extension ViewController: UICollectionViewDataSource {
 
 }
 
-extension ViewController: UICollectionViewDelegateFlowLayout {
-    
+extension MatchesViewController: UICollectionViewDelegateFlowLayout {
+
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = itemWidth(for: safeArea.layoutFrame.width, spacing: 0)
-        return CGSize(width: width, height: LayoutConstant.itemHeight)
+        let width = itemWidth(for: safeArea.layoutFrame.width, spacing: section.rows[indexPath.row].cellSpacing)
+        return CGSize(width: width, height: section.rows[indexPath.row].cellHeight)
     }
     
     func itemWidth(for width: CGFloat, spacing: CGFloat) -> CGFloat {
@@ -136,16 +124,24 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: LayoutConstant.spacing, left: LayoutConstant.spacing, bottom: LayoutConstant.spacing, right: LayoutConstant.spacing)
+        return UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
     
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return LayoutConstant.spacing
+        return 10
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return LayoutConstant.spacing
+        return 10
+    }
+
+}
+
+extension MatchesViewController: MatchesViewInputProtocol {
+    func reloadDataForSection(for section: MatchesSectionViewModel) {
+        self.section = section
+        collectionView.reloadData()
     }
 
 }

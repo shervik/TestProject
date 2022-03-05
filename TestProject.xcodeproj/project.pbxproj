@@ -9,20 +9,25 @@
 /* Begin PBXBuildFile section */
 		556215E527C8C78400932717 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 556215E427C8C78400932717 /* AppDelegate.swift */; };
 		556215E727C8C78400932717 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 556215E627C8C78400932717 /* SceneDelegate.swift */; };
-		556215E927C8C78400932717 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 556215E827C8C78400932717 /* ViewController.swift */; };
+		556215E927C8C78400932717 /* MatchesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 556215E827C8C78400932717 /* MatchesViewController.swift */; };
 		556215EE27C8C78500932717 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 556215ED27C8C78500932717 /* Assets.xcassets */; };
 		556215F127C8C78500932717 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 556215EF27C8C78500932717 /* LaunchScreen.storyboard */; };
 		556215FC27C8C81F00932717 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 556215FB27C8C81F00932717 /* NetworkManager.swift */; };
 		5562160027C8C86100932717 /* Matches.swift in Sources */ = {isa = PBXBuildFile; fileRef = 556215FF27C8C86100932717 /* Matches.swift */; };
 		5562160527C9293A00932717 /* TableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5562160427C9293A00932717 /* TableCell.swift */; };
 		5562160827CC0D1200932717 /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5562160727CC0D1200932717 /* Date.swift */; };
+		55BCB55127D2A58E007182E0 /* MatchesPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55BCB55027D2A58E007182E0 /* MatchesPresenter.swift */; };
+		55BCB55327D2A5E7007182E0 /* MatchesInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55BCB55227D2A5E7007182E0 /* MatchesInteractor.swift */; };
+		55BCB55527D2A66B007182E0 /* MatchesRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55BCB55427D2A66B007182E0 /* MatchesRouter.swift */; };
+		55BCB55727D2A743007182E0 /* MatchesConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55BCB55627D2A743007182E0 /* MatchesConfigurator.swift */; };
+		55BCB55B27D33C24007182E0 /* MatchesCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55BCB55A27D33C24007182E0 /* MatchesCellViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		556215E127C8C78400932717 /* TestProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		556215E427C8C78400932717 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		556215E627C8C78400932717 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		556215E827C8C78400932717 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		556215E827C8C78400932717 /* MatchesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchesViewController.swift; sourceTree = "<group>"; };
 		556215ED27C8C78500932717 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		556215F027C8C78500932717 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		556215F227C8C78500932717 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -30,6 +35,11 @@
 		556215FF27C8C86100932717 /* Matches.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Matches.swift; sourceTree = "<group>"; };
 		5562160427C9293A00932717 /* TableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableCell.swift; sourceTree = "<group>"; };
 		5562160727CC0D1200932717 /* Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
+		55BCB55027D2A58E007182E0 /* MatchesPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchesPresenter.swift; sourceTree = "<group>"; };
+		55BCB55227D2A5E7007182E0 /* MatchesInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchesInteractor.swift; sourceTree = "<group>"; };
+		55BCB55427D2A66B007182E0 /* MatchesRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchesRouter.swift; sourceTree = "<group>"; };
+		55BCB55627D2A743007182E0 /* MatchesConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchesConfigurator.swift; sourceTree = "<group>"; };
+		55BCB55A27D33C24007182E0 /* MatchesCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchesCellViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,18 +72,55 @@
 		556215E327C8C78400932717 /* TestProject */ = {
 			isa = PBXGroup;
 			children = (
-				556215E827C8C78400932717 /* ViewController.swift */,
-				5562160427C9293A00932717 /* TableCell.swift */,
-				556215FB27C8C81F00932717 /* NetworkManager.swift */,
-				556215FF27C8C86100932717 /* Matches.swift */,
-				5562160727CC0D1200932717 /* Date.swift */,
 				556215E427C8C78400932717 /* AppDelegate.swift */,
 				556215E627C8C78400932717 /* SceneDelegate.swift */,
 				556215ED27C8C78500932717 /* Assets.xcassets */,
 				556215EF27C8C78500932717 /* LaunchScreen.storyboard */,
 				556215F227C8C78500932717 /* Info.plist */,
+				55BCB54D27D2A31F007182E0 /* Model */,
+				55BCB54E27D2A32D007182E0 /* Matches */,
+				55BCB54F27D2A338007182E0 /* Service */,
 			);
 			path = TestProject;
+			sourceTree = "<group>";
+		};
+		55BCB54D27D2A31F007182E0 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				556215FF27C8C86100932717 /* Matches.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		55BCB54E27D2A32D007182E0 /* Matches */ = {
+			isa = PBXGroup;
+			children = (
+				55BCB55827D33C02007182E0 /* MatchesCell */,
+				556215E827C8C78400932717 /* MatchesViewController.swift */,
+				55BCB55027D2A58E007182E0 /* MatchesPresenter.swift */,
+				55BCB55227D2A5E7007182E0 /* MatchesInteractor.swift */,
+				55BCB55427D2A66B007182E0 /* MatchesRouter.swift */,
+				55BCB55627D2A743007182E0 /* MatchesConfigurator.swift */,
+			);
+			path = Matches;
+			sourceTree = "<group>";
+		};
+		55BCB54F27D2A338007182E0 /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				5562160727CC0D1200932717 /* Date.swift */,
+				556215FB27C8C81F00932717 /* NetworkManager.swift */,
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
+		55BCB55827D33C02007182E0 /* MatchesCell */ = {
+			isa = PBXGroup;
+			children = (
+				5562160427C9293A00932717 /* TableCell.swift */,
+				55BCB55A27D33C24007182E0 /* MatchesCellViewModel.swift */,
+			);
+			path = MatchesCell;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -148,10 +195,15 @@
 			files = (
 				5562160527C9293A00932717 /* TableCell.swift in Sources */,
 				556215FC27C8C81F00932717 /* NetworkManager.swift in Sources */,
+				55BCB55727D2A743007182E0 /* MatchesConfigurator.swift in Sources */,
 				5562160827CC0D1200932717 /* Date.swift in Sources */,
-				556215E927C8C78400932717 /* ViewController.swift in Sources */,
+				55BCB55327D2A5E7007182E0 /* MatchesInteractor.swift in Sources */,
+				556215E927C8C78400932717 /* MatchesViewController.swift in Sources */,
 				556215E527C8C78400932717 /* AppDelegate.swift in Sources */,
 				5562160027C8C86100932717 /* Matches.swift in Sources */,
+				55BCB55127D2A58E007182E0 /* MatchesPresenter.swift in Sources */,
+				55BCB55527D2A66B007182E0 /* MatchesRouter.swift in Sources */,
+				55BCB55B27D33C24007182E0 /* MatchesCellViewModel.swift in Sources */,
 				556215E727C8C78400932717 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

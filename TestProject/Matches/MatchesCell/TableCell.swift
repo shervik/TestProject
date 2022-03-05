@@ -8,13 +8,30 @@
 import Foundation
 import UIKit
 
-final class TableCell: UICollectionViewCell {
+protocol CellModelRepresentable {
+    var cellViewModel: CellIdentifiable? { get set }
+}
+
+final class TableCell: UICollectionViewCell, CellModelRepresentable {
+    var cellViewModel: CellIdentifiable? {
+        didSet {
+            updateViews()
+        }
+    }
     
     private lazy var homeTeam = { UILabel() }()
     private lazy var awayTeam = { UILabel() }()
     private lazy var scoreMatch = { UILabel() }()
     private lazy var status = { UILabel() }()
 
+    func updateViews() {
+        guard let cellViewModel = cellViewModel as? MatchesCellViewModel else { return }
+        homeTeam.text = cellViewModel.homeTeamName
+        awayTeam.text = cellViewModel.awayTeamName
+        scoreMatch.text = cellViewModel.score
+        status.text = cellViewModel.status
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         addSubview(homeTeam)
@@ -30,21 +47,6 @@ final class TableCell: UICollectionViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    func setTextCell(match: Match) {
-        homeTeam.text = match.homeTeam?.name
-        awayTeam.text = match.awayTeam?.name
-    }
-    
-    func setScoreCell(score: Score) {
-        let homeScore: Int = score.fullTime?.homeTeam ?? 0
-        let awayScore: Int = score.fullTime?.awayTeam ?? 0
-        scoreMatch.text = "\(homeScore) : \(awayScore)"
-    }
-    
-    func setStatus(match: Match) {
-        status.text = match.status
     }
     
     private func configureHomeTeam() {
