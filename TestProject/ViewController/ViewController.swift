@@ -5,33 +5,40 @@
 //  Created by Виктория Щербакова on 25.02.2022.
 //
 
-private enum LayoutConstant {
+import UIKit
+
+enum LayoutConstant {
     static let spacing: CGFloat = 10.0
     static let itemHeight: CGFloat = 100.0
 }
-
-import UIKit
 
 final class ViewController: UIViewController {
     private var safeArea: UILayoutGuide { view.safeAreaLayoutGuide }
 
     private lazy var titleLive: UILabel = { UILabel() }()
     
-    private lazy var collectionView: UICollectionView = {
-        let viewLayout = UICollectionViewFlowLayout()
-        return UICollectionView(frame: .zero, collectionViewLayout: viewLayout)
+    private lazy var tableView: UITableView = { UITableView(frame: .zero, style: UITableView.Style.grouped) }()
+    
+    private lazy var segmentControl: UISegmentedControl = {
+        let items = menuItems.map { $0.title }
+        return UISegmentedControl(items: items)
     }()
     
-    private lazy var segmentControl: UISegmentedControl = { UISegmentedControl(items: menuItems) }()
+    private let menuItems = [
+        DateSegment(title: "Вчера", date: .yesterday),
+        DateSegment(title: "Сегодня", date: .today),
+        DateSegment(title: "Завтра", date: .tomorrow)
+    ]
     
-    private let menuItems = ["Вчера", "Сегодня", "Завтра"]
     private var dataMatch: [Match] = []
     private let networkManager = NetworkManager()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemGreen
-        setSegmentControl(selectedIndex: 1)
+        let initialIndex = 1
+        setSegmentControl(selectedIndex: initialIndex)
+        fetchData(for: initialIndex)
         setTitle(titleText: "Title")
         setTableView()
     }
@@ -43,7 +50,7 @@ final class ViewController: UIViewController {
                 self?.dataMatch = matches
                 
                 DispatchQueue.main.async {
-                    self?.collectionView.reloadData()
+                    self?.tableView.reloadData()
                 }
                 
             case .failure(let error):
@@ -78,74 +85,55 @@ final class ViewController: UIViewController {
     }
     
     @objc private func handleSegmentChange() {
-        switch segmentControl.selectedSegmentIndex {
-        case 0: getMatches(date: Date.yesterday)
-        case 1: getMatches(date: Date.today)
-        default: getMatches(date: Date.tomorrow)
+        fetchData(for: segmentControl.selectedSegmentIndex)
+    }
+    
+    private func fetchData(for segmentIndex: Int) {
+        if menuItems.count >= 0 && menuItems.count > segmentIndex {
+            getMatches(date: menuItems[segmentIndex].date)
         }
-        collectionView.reloadData()
     }
     
     private func setTableView() {
-        view.addSubview(collectionView)
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.topAnchor.constraint(equalTo: titleLive.bottomAnchor, constant: 30).isActive = true
-        collectionView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        collectionView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor).isActive = true
-        collectionView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        collectionView.alwaysBounceVertical = true
-        collectionView.register(TableCell.self, forCellWithReuseIdentifier: "cell")
-        collectionView.delegate = self
-        collectionView.dataSource = self
+        view.addSubview(tableView)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.topAnchor.constraint(equalTo: titleLive.bottomAnchor, constant: 30).isActive = true
+        tableView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        tableView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor).isActive = true
+        tableView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        tableView.alwaysBounceVertical = true
+        tableView.register(TableCell.self, forCellReuseIdentifier: TableCell.identifier)
+        tableView.delegate = self
+        tableView.dataSource = self
     }
     
 }
 
-extension ViewController: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return dataMatch.count
+extension ViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        dataMatch.count
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! TableCell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: TableCell.identifier, for: indexPath) as? TableCell else {
+            fatalError("Failed to get cell from the tableView. Expected type `TableCell`")
+        }
     
-        cell.setTextCell(match: dataMatch[indexPath.row])
-        cell.setScoreCell(score: dataMatch[indexPath.row].score!)
-        cell.setStatus(match: dataMatch[indexPath.row])
+        cell.setText(match: dataMatch[indexPath.row])
         
         cell.layer.borderColor = UIColor.systemGreen.cgColor
         cell.layer.borderWidth = 2
         cell.layer.cornerRadius = 30
+        cell.clipsToBounds = true
+        
         return cell
     }
-
 }
 
-extension ViewController: UICollectionViewDelegateFlowLayout {
+extension ViewController: UITableViewDelegate {
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = itemWidth(for: safeArea.layoutFrame.width, spacing: 0)
-        return CGSize(width: width, height: LayoutConstant.itemHeight)
-    }
-    
-    func itemWidth(for width: CGFloat, spacing: CGFloat) -> CGFloat {
-        let itemsInRow: CGFloat = 1
-        let totalSpacing: CGFloat = 2 * spacing + (itemsInRow - 1) * spacing
-        let finalWidth = (width - totalSpacing) / itemsInRow
-        return finalWidth - 5.0
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: LayoutConstant.spacing, left: LayoutConstant.spacing, bottom: LayoutConstant.spacing, right: LayoutConstant.spacing)
-    
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return LayoutConstant.spacing
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return LayoutConstant.spacing
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        LayoutConstant.itemHeight
     }
 
 }

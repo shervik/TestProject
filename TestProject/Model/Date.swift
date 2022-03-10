@@ -7,6 +7,16 @@
 
 import Foundation
 
+class DateSegment {
+    var title: String
+    var date: Date
+    
+    init(title: String, date: Date) {
+        self.title = title
+        self.date = date
+    }
+}
+
 extension Date {
     static var yesterday: Date { return Date().dayBefore }
     static var tomorrow:  Date { return Date().dayAfter }
