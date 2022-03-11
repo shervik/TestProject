@@ -33,6 +33,19 @@ final class TableCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override var frame: CGRect {
+        get {
+            return super.frame
+        }
+        set (newFrame) {
+            var frame = newFrame
+            frame.origin.x += LayoutConstant.spacing
+            frame.size.width -= 2 * LayoutConstant.spacing
+            frame.size.height -= 2 * LayoutConstant.spacing
+            super.frame = frame
+        }
+    }
+    
     override func prepareForReuse() {
         super.prepareForReuse()
         homeTeam.text = nil

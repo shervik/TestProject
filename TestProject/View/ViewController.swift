@@ -7,7 +7,7 @@
 
 import UIKit
 
-private enum LayoutConstant {
+enum LayoutConstant {
     static let spacing: CGFloat = 10.0
     static let itemHeight: CGFloat = 100.0
 }
@@ -86,7 +86,7 @@ final class ViewController: UIViewController {
         tableView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor).isActive = true
         tableView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         tableView.alwaysBounceVertical = true
-        tableView.register(TableCell.self, forCellWithReuseIdentifier: TableCell.identifier)
+        tableView.register(TableCell.self, forCellReuseIdentifier: TableCell.identifier)
         tableView.delegate = self
         tableView.dataSource = self
     }
