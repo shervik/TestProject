@@ -12,32 +12,42 @@ protocol MatchesViewInputProtocol: AnyObject {
 }
 
 protocol MatchesViewOutputProtocol: AnyObject {
+    var menuItems: [DateSegment] { get }
     init(view: MatchesViewInputProtocol)
     func viewDidLoad(date: Date)
 }
 
 final class MatchesViewController: UIViewController {
+    private static let itemHeight: CGFloat = 100.0
+    private static let initialIndex = 1
     private var safeArea: UILayoutGuide { view.safeAreaLayoutGuide }
     
     var presenter: MatchesViewOutputProtocol?
     private let configurator: MatchesConfiguratorInputProtocol = MatchesConfigurator()
-
-    private lazy var titleLive: UILabel = { UILabel() }()
-    private lazy var collectionView: UICollectionView = {
-        let viewLayout = UICollectionViewFlowLayout()
-        return UICollectionView(frame: .zero, collectionViewLayout: viewLayout)
-    }()
-    private lazy var segmentControl: UISegmentedControl = { UISegmentedControl(items: menuItems) }()
     
-    private let menuItems = ["Вчера", "Сегодня", "Завтра"]
+    private lazy var titleLive: UILabel = { UILabel() }()
+    
+    private lazy var tableView: UITableView = {
+        let table = UITableView(frame: .zero, style: UITableView.Style.plain)
+        table.separatorStyle = .none
+        table.allowsSelection = false
+        return table
+    }()
+    
+    private lazy var segmentControl: UISegmentedControl = {
+        let items = menuItems.map { $0.title }
+        return UISegmentedControl(items: items)
+    }()
+    
+    private var menuItems: [DateSegment] { presenter?.menuItems ?? [] }
     private var section: SectionRowPresentable = MatchesSectionViewModel()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         configurator.configure(with: self)
-//        presenter?.viewDidLoad()
+        updateData(for: MatchesViewController.initialIndex)
         view.backgroundColor = .systemGreen
-        setSegmentControl(selectedIndex: 1)
+        setSegmentControl(selectedIndex: MatchesViewController.initialIndex)
         setTitle(titleText: "Title")
         setTableView()
     }
@@ -52,7 +62,7 @@ final class MatchesViewController: UIViewController {
         titleLive.textAlignment = .left
         titleLive.font = UIFont.systemFont(ofSize: 20)
     }
-
+    
     
     private func setSegmentControl(selectedIndex: Int) {
         view.addSubview(segmentControl)
@@ -67,81 +77,59 @@ final class MatchesViewController: UIViewController {
         
     }
     
-    @objc private func handleSegmentChange() {
-        switch segmentControl.selectedSegmentIndex {
-        case 0: presenter?.viewDidLoad(date: Date.yesterday)
-        case 1: presenter?.viewDidLoad(date: Date.today)
-        default: presenter?.viewDidLoad(date: Date.tomorrow)
+    private func updateData(for segmentIndex: Int) {
+        if menuItems.count >= 0 && menuItems.count > segmentIndex {
+            presenter?.viewDidLoad(date: menuItems[segmentIndex].date)
         }
-//        collectionView.reloadData()
+    }
+    
+    @objc private func handleSegmentChange() {
+        updateData(for: segmentControl.selectedSegmentIndex)
     }
     
     private func setTableView() {
-        view.addSubview(collectionView)
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.topAnchor.constraint(equalTo: titleLive.bottomAnchor, constant: 30).isActive = true
-        collectionView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        collectionView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor).isActive = true
-        collectionView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        collectionView.alwaysBounceVertical = true
-        collectionView.register(TableCell.self, forCellWithReuseIdentifier: "cell")
-        collectionView.delegate = self
-        collectionView.dataSource = self
+        view.addSubview(tableView)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.topAnchor.constraint(equalTo: titleLive.bottomAnchor, constant: 30).isActive = true
+        tableView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        tableView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor).isActive = true
+        tableView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        tableView.alwaysBounceVertical = true
+        tableView.register(TableCell.self, forCellReuseIdentifier: "matchesCell")
+        tableView.delegate = self
+        tableView.dataSource = self
     }
     
 }
 
-extension MatchesViewController: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+extension MatchesViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         self.section.rows.count
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cellViewModel = section.rows[indexPath.row]
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellViewModel.cellIdentifier, for: indexPath) as! TableCell
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: cellViewModel.cellIdentifier, for: indexPath) as? TableCell else {
+            fatalError("Failed to get cell from the tableView. Expected type `TableCell`")
+        }
         cell.cellViewModel = cellViewModel
         
-        cell.layer.borderColor = UIColor.systemGreen.cgColor
-        cell.layer.borderWidth = 2
-        cell.layer.cornerRadius = 30
         return cell
     }
-
+    
 }
 
-extension MatchesViewController: UICollectionViewDelegateFlowLayout {
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = itemWidth(for: safeArea.layoutFrame.width, spacing: section.rows[indexPath.row].cellSpacing)
-        return CGSize(width: width, height: section.rows[indexPath.row].cellHeight)
-    }
+extension MatchesViewController: UITableViewDelegate {
     
-    func itemWidth(for width: CGFloat, spacing: CGFloat) -> CGFloat {
-        let itemsInRow: CGFloat = 1
-        let totalSpacing: CGFloat = 2 * spacing + (itemsInRow - 1) * spacing
-        let finalWidth = (width - totalSpacing) / itemsInRow
-        return finalWidth - 5.0
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        MatchesViewController.itemHeight
     }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
-    
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 10
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 10
-    }
-
 }
 
 extension MatchesViewController: MatchesViewInputProtocol {
     func reloadDataForSection(for section: MatchesSectionViewModel) {
         self.section = section
-        collectionView.reloadData()
+        tableView.reloadData()
     }
-
+    
 }

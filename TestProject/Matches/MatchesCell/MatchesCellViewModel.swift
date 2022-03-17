@@ -24,7 +24,7 @@ class MatchesCellViewModel: CellIdentifiable {
     let status: String
     
     var cellIdentifier: String {
-        "cell"
+        "matchesCell"
     }
     
     var cellHeight: Double {

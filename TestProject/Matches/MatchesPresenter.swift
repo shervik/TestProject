@@ -7,21 +7,23 @@
 
 import Foundation
 
-struct MatchData {
-    
-}
-
 class MatchesPresenter: MatchesViewOutputProtocol {
     weak var view: MatchesViewInputProtocol?
     var interactor: MatchesInteractorInputProtocol?
     var router: MatchesRouterInputProtocol?
+    
+    var menuItems: [DateSegment] = [
+        DateSegment(title: "Вчера", date: .yesterday),
+        DateSegment(title: "Сегодня", date: .today),
+        DateSegment(title: "Завтра", date: .tomorrow)
+    ]
     
     required init(view: MatchesViewInputProtocol) {
         self.view = view
     }
     
     func viewDidLoad(date: Date) {
-        interactor?.fetchMatches(date: date)
+        interactor?.viewChangedData(date: date)
     }
     
 }

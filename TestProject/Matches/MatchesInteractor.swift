@@ -9,8 +9,7 @@ import Foundation
 
 protocol MatchesInteractorInputProtocol: AnyObject {
     init(presenter: MatchesInteractorOutputProtocol)
-    func fetchMatches(date: Date)
-    
+    func viewChangedData(date: Date)
 }
 
 protocol MatchesInteractorOutputProtocol: AnyObject {
@@ -24,7 +23,7 @@ class MatchesInteractor: MatchesInteractorInputProtocol {
         self.presenter = presenter
     }
     
-    func fetchMatches(date: Date) {
+    func viewChangedData(date: Date) {
         NetworkManager().getMatches(date: date) { [weak self] result in
             switch result {
             case .success(matches: let matches):
