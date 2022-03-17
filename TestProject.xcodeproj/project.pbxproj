@@ -18,6 +18,8 @@
 		5562160827CC0D1200932717 /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5562160727CC0D1200932717 /* Date.swift */; };
 		5562161427D005FB00932717 /* MatchesPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5562161327D005FB00932717 /* MatchesPresenter.swift */; };
 		55BCB54327D12FD8007182E0 /* ModelBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55BCB54227D12FD8007182E0 /* ModelBuilder.swift */; };
+		55BCB55D27E0DFFB007182E0 /* DateSegment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55BCB55C27E0DFFB007182E0 /* DateSegment.swift */; };
+		55EC1ECC27E1F64100FFE551 /* CellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55EC1ECB27E1F64100FFE551 /* CellModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +36,8 @@
 		5562160727CC0D1200932717 /* Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
 		5562161327D005FB00932717 /* MatchesPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchesPresenter.swift; sourceTree = "<group>"; };
 		55BCB54227D12FD8007182E0 /* ModelBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelBuilder.swift; sourceTree = "<group>"; };
+		55BCB55C27E0DFFB007182E0 /* DateSegment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateSegment.swift; sourceTree = "<group>"; };
+		55EC1ECB27E1F64100FFE551 /* CellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,13 +70,13 @@
 		556215E327C8C78400932717 /* TestProject */ = {
 			isa = PBXGroup;
 			children = (
-				556215E427C8C78400932717 /* AppDelegate.swift */,
-				556215E627C8C78400932717 /* SceneDelegate.swift */,
-				5562161227CD196C00932717 /* Presenter */,
+				5562161327D005FB00932717 /* MatchesPresenter.swift */,
 				5562161127CD17A000932717 /* Model */,
-				55BCB54027D0F3CF007182E0 /* ServiceLayer */,
+				55BCB55E27E0E0A1007182E0 /* ServiceLayer */,
 				55BCB54127D12DB7007182E0 /* View */,
 				55BCB54427D13116007182E0 /* Helper */,
+				556215E427C8C78400932717 /* AppDelegate.swift */,
+				556215E627C8C78400932717 /* SceneDelegate.swift */,
 				556215ED27C8C78500932717 /* Assets.xcassets */,
 				556215EF27C8C78500932717 /* LaunchScreen.storyboard */,
 				556215F227C8C78500932717 /* Info.plist */,
@@ -84,24 +88,10 @@
 			isa = PBXGroup;
 			children = (
 				556215FF27C8C86100932717 /* Matches.swift */,
+				55BCB55C27E0DFFB007182E0 /* DateSegment.swift */,
+				55EC1ECB27E1F64100FFE551 /* CellModel.swift */,
 			);
 			path = Model;
-			sourceTree = "<group>";
-		};
-		5562161227CD196C00932717 /* Presenter */ = {
-			isa = PBXGroup;
-			children = (
-				5562161327D005FB00932717 /* MatchesPresenter.swift */,
-			);
-			path = Presenter;
-			sourceTree = "<group>";
-		};
-		55BCB54027D0F3CF007182E0 /* ServiceLayer */ = {
-			isa = PBXGroup;
-			children = (
-				556215FB27C8C81F00932717 /* NetworkManager.swift */,
-			);
-			path = ServiceLayer;
 			sourceTree = "<group>";
 		};
 		55BCB54127D12DB7007182E0 /* View */ = {
@@ -120,6 +110,14 @@
 				5562160727CC0D1200932717 /* Date.swift */,
 			);
 			path = Helper;
+			sourceTree = "<group>";
+		};
+		55BCB55E27E0E0A1007182E0 /* ServiceLayer */ = {
+			isa = PBXGroup;
+			children = (
+				556215FB27C8C81F00932717 /* NetworkManager.swift */,
+			);
+			path = ServiceLayer;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -192,11 +190,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				55EC1ECC27E1F64100FFE551 /* CellModel.swift in Sources */,
 				5562160527C9293A00932717 /* TableCell.swift in Sources */,
 				556215FC27C8C81F00932717 /* NetworkManager.swift in Sources */,
 				5562160827CC0D1200932717 /* Date.swift in Sources */,
 				556215E927C8C78400932717 /* ViewController.swift in Sources */,
 				556215E527C8C78400932717 /* AppDelegate.swift in Sources */,
+				55BCB55D27E0DFFB007182E0 /* DateSegment.swift in Sources */,
 				5562160027C8C86100932717 /* Matches.swift in Sources */,
 				55BCB54327D12FD8007182E0 /* ModelBuilder.swift in Sources */,
 				5562161427D005FB00932717 /* MatchesPresenter.swift in Sources */,

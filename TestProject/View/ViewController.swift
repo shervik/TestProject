@@ -7,39 +7,37 @@
 
 import UIKit
 
-enum LayoutConstant {
-    static let spacing: CGFloat = 10.0
-    static let itemHeight: CGFloat = 100.0
-}
-
 final class ViewController: UIViewController {
+    private static let itemHeight: CGFloat = 100.0
+    private static let initialIndex = 1
+    
     private var safeArea: UILayoutGuide { view.safeAreaLayoutGuide }
     
     private lazy var titleLive: UILabel = { UILabel() }()
     
-    private lazy var tableView: UITableView = { UITableView(frame: .zero, style: UITableView.Style.grouped) }()
+    private lazy var tableView: UITableView = {
+        let table = UITableView(frame: .zero, style: UITableView.Style.plain)
+        table.separatorStyle = .none
+        table.allowsSelection = false
+        return table
+    }()
     
     private lazy var segmentControl: UISegmentedControl = {
         let items = menuItems.map { $0.title }
         return UISegmentedControl(items: items)
     }()
     
-    private let menuItems = [
-        DateSegment(title: "Вчера", date: .yesterday),
-        DateSegment(title: "Сегодня", date: .today),
-        DateSegment(title: "Завтра", date: .tomorrow)
-    ]
+    private var menuItems: [DateSegment] { presenter?.menuItems ?? [] }
+    private var matches: [Match] { presenter?.matches ?? [] }
     
     var presenter: MatchesPresenterProtocol?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemGreen
-        let initialIndex = 1
-        setSegmentControl(selectedIndex: initialIndex)
-        setSegmentControl(selectedIndex: 1)
-        fetchData(for: initialIndex)
-        setTitle(titleText: "Title")
+        setSegmentControl(selectedIndex: ViewController.initialIndex)
+        updateData(for: ViewController.initialIndex)
+        setTitle(titleText: presenter?.title ?? "")
         setTableView()
     }
     
@@ -69,12 +67,12 @@ final class ViewController: UIViewController {
     }
     
     @objc private func handleSegmentChange() {
-        fetchData(for: segmentControl.selectedSegmentIndex)
+        updateData(for: segmentControl.selectedSegmentIndex)
     }
     
-    private func fetchData(for segmentIndex: Int) {
+    private func updateData(for segmentIndex: Int) {
         if menuItems.count >= 0 && menuItems.count > segmentIndex {
-            presenter?.getMatches(date: menuItems[segmentIndex].date)
+            presenter?.viewChangedData(date: menuItems[segmentIndex].date)
         }
     }
     
@@ -105,21 +103,16 @@ extension ViewController: MatchViewProtocol {
 
 extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        presenter?.matches?.count ?? 0
+        matches.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: TableCell.identifier, for: indexPath) as? TableCell else {
             fatalError("Failed to get cell from the tableView. Expected type `TableCell`")
         }
-        let match = presenter?.matches?[indexPath.row]
-        
-        cell.setText(match: match!)
-        
-        cell.layer.borderColor = UIColor.systemGreen.cgColor
-        cell.layer.borderWidth = 2
-        cell.layer.cornerRadius = 30
-        cell.clipsToBounds = true
+                
+        let match = matches[indexPath.row]
+        cell.setText(indexPath: indexPath)
         
         return cell
     }
@@ -129,7 +122,7 @@ extension ViewController: UITableViewDataSource {
 extension ViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        LayoutConstant.itemHeight
+        ViewController.itemHeight
     }
     
 }
