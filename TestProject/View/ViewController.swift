@@ -27,10 +27,11 @@ final class ViewController: UIViewController {
         return UISegmentedControl(items: items)
     }()
     
+    var presenter: MatchesPresenterProtocol?
+
     private var menuItems: [DateSegment] { presenter?.menuItems ?? [] }
     private var matches: [Match] { presenter?.matches ?? [] }
-    
-    var presenter: MatchesPresenterProtocol?
+    private var viewMatch: [CellModel] { presenter?.viewMatch ?? [] }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -110,9 +111,9 @@ extension ViewController: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: TableCell.identifier, for: indexPath) as? TableCell else {
             fatalError("Failed to get cell from the tableView. Expected type `TableCell`")
         }
-                
-        let match = matches[indexPath.row]
-        cell.setText(indexPath: indexPath)
+        
+        let cellModel = CellModel(match: matches[indexPath.row])
+        cell.setText(cellModel: cellModel)
         
         return cell
     }

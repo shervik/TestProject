@@ -11,9 +11,6 @@ import UIKit
 final class TableCell: UITableViewCell {
     static let identifier = "MatchesCell"
     private static let spacing: CGFloat = 10.0
-//    private var viewMatch: [CellModel] { ViewController().presenter?.viewMatch ?? [] }
-    private var presenter: MatchesPresenterProtocol?
-    private var viewMatch: [CellModel] { presenter?.viewMatch ?? [] }
 
     private lazy var homeTeam = { UILabel() }()
     private lazy var awayTeam = { UILabel() }()
@@ -61,12 +58,22 @@ final class TableCell: UITableViewCell {
         status.text = nil
     }
     
-    func setText(indexPath: IndexPath) {
-        homeTeam.text = viewMatch[indexPath.row].homeTeamName
-        awayTeam.text = viewMatch[indexPath.row].awayTeamName
-        status.text = viewMatch[indexPath.row].status
-        scoreMatch.text = viewMatch[indexPath.row].score
+    func setText(cellModel: CellModel) {
+        homeTeam.text = cellModel.homeTeamName
+        awayTeam.text = cellModel.awayTeamName
+        status.text = cellModel.status
+        scoreMatch.text = cellModel.score
     }
+    
+//    func setText(match: Match) {
+//        homeTeam.text = match.homeTeam?.name ?? ""
+//        awayTeam.text = match.awayTeam?.name ?? ""
+//        status.text = match.status ?? ""
+//
+//        let homeScore: Int = match.score?.fullTime?.homeTeam ?? 0
+//        let awayScore: Int = match.score?.fullTime?.awayTeam ?? 0
+//        scoreMatch.text = "\(homeScore) : \(awayScore)"
+//    }
     
     private func setupContent() {
         content.translatesAutoresizingMaskIntoConstraints = false
