@@ -16,6 +16,8 @@ protocol TableViewCellViewModelProtocol {
 }
 
 class TableViewCellViewModel: TableViewCellViewModelProtocol {
+    private let matches: Match
+
     var homeTeamName: String {
         matches.homeTeam?.name ?? ""
     }
@@ -33,8 +35,6 @@ class TableViewCellViewModel: TableViewCellViewModelProtocol {
     var status: String {
         matches.status ?? ""
     }
-    
-    private let matches: Match
     
     required init(matches: Match) {
         self.matches = matches

@@ -18,6 +18,7 @@
 		5562160827CC0D1200932717 /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5562160727CC0D1200932717 /* Date.swift */; };
 		55BCB54727D23EC1007182E0 /* MatchesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55BCB54627D23EC1007182E0 /* MatchesViewModel.swift */; };
 		55BCB54C27D26AF5007182E0 /* TableViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55BCB54B27D26AF5007182E0 /* TableViewCellViewModel.swift */; };
+		55EC1ECE27E3B95000FFE551 /* DateSegment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55EC1ECD27E3B95000FFE551 /* DateSegment.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,7 @@
 		5562160727CC0D1200932717 /* Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
 		55BCB54627D23EC1007182E0 /* MatchesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchesViewModel.swift; sourceTree = "<group>"; };
 		55BCB54B27D26AF5007182E0 /* TableViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCellViewModel.swift; sourceTree = "<group>"; };
+		55EC1ECD27E3B95000FFE551 /* DateSegment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateSegment.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,6 +95,7 @@
 			isa = PBXGroup;
 			children = (
 				556215FF27C8C86100932717 /* Matches.swift */,
+				55EC1ECD27E3B95000FFE551 /* DateSegment.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -181,6 +184,7 @@
 				55BCB54727D23EC1007182E0 /* MatchesViewModel.swift in Sources */,
 				5562160827CC0D1200932717 /* Date.swift in Sources */,
 				556215E927C8C78400932717 /* ViewController.swift in Sources */,
+				55EC1ECE27E3B95000FFE551 /* DateSegment.swift in Sources */,
 				556215E527C8C78400932717 /* AppDelegate.swift in Sources */,
 				55BCB54C27D26AF5007182E0 /* TableViewCellViewModel.swift in Sources */,
 				5562160027C8C86100932717 /* Matches.swift in Sources */,
